@@ -7,7 +7,7 @@ class AdminPostPage extends StatefulWidget {
   @override
   State<AdminPostPage> createState() => _AdminPostPageState();
 }
-
+//here we define the state for the AdminPostPage
 class _AdminPostPageState extends State<AdminPostPage> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _fadeAnimation;
