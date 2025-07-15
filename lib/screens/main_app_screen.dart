@@ -78,6 +78,7 @@ class _MainAppScreenState extends State<MainAppScreen> with SingleTickerProvider
         backgroundColor: theme.colorScheme.background,
         elevation: 1,
         centerTitle: true,
+        automaticallyImplyLeading: false, // This removes the back button.
         actions: [
           IconButton(
             icon: Icon(Icons.logout, color: theme.colorScheme.primary),
