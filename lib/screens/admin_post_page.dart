@@ -178,7 +178,7 @@ class _AdminPostPageState extends State<AdminPostPage> with SingleTickerProvider
     );
   }
 }
-
+//here we define the AnimatedPostCard widget
 class AnimatedPostCard extends StatefulWidget {
   final Widget child;
   const AnimatedPostCard({required Key key, required this.child}) : super(key: key);

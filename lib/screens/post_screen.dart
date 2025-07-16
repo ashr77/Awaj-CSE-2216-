@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'dart:io';
-
+//here we import the necessary packages for our post screen
 class PostScreen extends StatefulWidget {
   @override
   _PostScreenState createState() => _PostScreenState();
