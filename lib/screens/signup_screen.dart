@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:image_picker/image_picker.dart';
-
+//Aditto_09
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
   @override
