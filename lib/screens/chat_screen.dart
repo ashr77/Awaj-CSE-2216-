@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'chat_request_dialog.dart';
-
+//both for user and authority chat
 class ChatScreen extends StatefulWidget {
   @override
   _ChatScreenState createState() => _ChatScreenState();
