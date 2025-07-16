@@ -9,7 +9,7 @@ class PostScreen extends StatefulWidget {
   @override
   _PostScreenState createState() => _PostScreenState();
 }
-
+//here we define the state for the PostScreen widget
 class _PostScreenState extends State<PostScreen> {
   final TextEditingController _postController = TextEditingController();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
