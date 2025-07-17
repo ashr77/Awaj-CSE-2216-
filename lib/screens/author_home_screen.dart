@@ -3,6 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'author_chat_page.dart';
 import 'author_conversations_screen.dart';
 import 'author_review_screen.dart';
+import '../theme_locale_provider.dart';
+import '../l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
 
 class AuthorHomeScreen extends StatefulWidget {
   const AuthorHomeScreen({super.key});
@@ -37,26 +40,30 @@ class _AuthorHomeScreenState extends State<AuthorHomeScreen> with SingleTickerPr
     super.dispose();
   }
 
-  // App theme-compatible gradients
-  final List<Color> requestGradient = [Color(0xFF1A237E), Color(0xFF1565C0)];
-  final List<Color> convoGradient = [Color(0xFF43A047), Color(0xFF388E3C)];
-  final List<Color> reportGradient = [Color(0xFF283593), Color(0xFF1A237E)];
-
   Future<void> _confirmSignOut() async {
+    final theme = Theme.of(context);
     final shouldLogout = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Confirm Logout'),
-        content: Text('Are you sure you want to logout?'),
+        backgroundColor: theme.dialogBackgroundColor,
+        title: Text(
+          AppLocalizations.of(context)?.confirmLogout ?? 'Confirm Logout',
+          style: TextStyle(color: theme.textTheme.bodyLarge?.color),
+        ),
+        content: Text(
+          AppLocalizations.of(context)?.areYouSureLogout ?? 'Are you sure you want to logout?',
+          style: TextStyle(color: theme.textTheme.bodyLarge?.color),
+        ),
         actions: [
           TextButton(
-            child: Text('Cancel'),
+            child: Text(AppLocalizations.of(context)?.cancel ?? 'Cancel', style: TextStyle(color: theme.colorScheme.primary)),
             onPressed: () => Navigator.of(context).pop(false),
           ),
           ElevatedButton(
-            child: Text('Yes, Logout'),
+            child: Text(AppLocalizations.of(context)?.yesLogout ?? 'Yes, Logout'),
             style: ElevatedButton.styleFrom(
-              backgroundColor: Theme.of(context).colorScheme.error,
+              backgroundColor: theme.colorScheme.error,
+              foregroundColor: theme.colorScheme.onError,
             ),
             onPressed: () => Navigator.of(context).pop(true),
           ),
@@ -73,17 +80,43 @@ class _AuthorHomeScreenState extends State<AuthorHomeScreen> with SingleTickerPr
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser;
     final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    // Theme-aware gradients
+    final List<Color> requestGradient = isDark
+        ? [theme.colorScheme.primary, theme.colorScheme.secondary]
+        : [theme.colorScheme.primary, theme.colorScheme.secondary];
+    final List<Color> convoGradient = isDark
+        ? [theme.colorScheme.secondary, theme.colorScheme.primary]
+        : [theme.colorScheme.secondary, theme.colorScheme.primary];
+    final List<Color> reportGradient = isDark
+        ? [theme.colorScheme.error, theme.colorScheme.primary]
+        : [theme.colorScheme.error, theme.colorScheme.primary];
 
     return Scaffold(
       backgroundColor: theme.colorScheme.background,
       appBar: AppBar(
-        title: Text('Author Home', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-        backgroundColor: Color(0xFF1A237E),
+        title: Text(AppLocalizations.of(context)?.authorHome ?? 'Author Home', style: TextStyle(color: theme.colorScheme.onPrimary, fontWeight: FontWeight.bold)),
+        backgroundColor: theme.colorScheme.primary,
         elevation: 0,
         actions: [
           IconButton(
-            icon: Icon(Icons.logout, color: Colors.white),
-            tooltip: 'Sign Out',
+            icon: Icon(Icons.language, color: theme.colorScheme.onPrimary),
+            onPressed: () {
+              Provider.of<ThemeLocaleProvider>(context, listen: false).toggleLocale();
+            },
+            tooltip: AppLocalizations.of(context)?.toggleLanguage ?? 'Toggle Language',
+          ),
+          IconButton(
+            icon: Icon(Icons.brightness_6, color: theme.colorScheme.onPrimary),
+            onPressed: () {
+              Provider.of<ThemeLocaleProvider>(context, listen: false).toggleTheme();
+            },
+            tooltip: AppLocalizations.of(context)?.toggleTheme ?? 'Toggle Theme',
+          ),
+          IconButton(
+            icon: Icon(Icons.logout, color: theme.colorScheme.onPrimary),
+            tooltip: AppLocalizations.of(context)?.signOut ?? 'Sign Out',
             onPressed: _confirmSignOut,
           ),
         ],
@@ -92,7 +125,7 @@ class _AuthorHomeScreenState extends State<AuthorHomeScreen> with SingleTickerPr
         width: double.infinity,
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [theme.colorScheme.background, Color(0xFFF5F7FA)],
+            colors: [theme.colorScheme.background, theme.cardColor],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -110,26 +143,26 @@ class _AuthorHomeScreenState extends State<AuthorHomeScreen> with SingleTickerPr
                     // Avatar and greeting
                     CircleAvatar(
                       radius: 38,
-                      backgroundColor: Colors.white,
+                      backgroundColor: theme.cardColor,
                       backgroundImage: user?.photoURL != null ? NetworkImage(user!.photoURL!) : null,
                       child: user?.photoURL == null
-                          ? Icon(Icons.person, size: 48, color: Color(0xFF1A237E))
+                          ? Icon(Icons.person, size: 48, color: theme.colorScheme.primary)
                           : null,
                     ),
                     SizedBox(height: 12),
                     Text(
-                      'Welcome, ${user?.displayName ?? 'Author'}!',
+                      AppLocalizations.of(context)?.welcomeAuthor("${user?.displayName ?? AppLocalizations.of(context)?.author ?? 'Author'}") ?? 'Welcome, Author!',
                       style: TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
-                        color: Color(0xFF1A237E),
+                        color: theme.colorScheme.primary,
                         letterSpacing: 0.5,
                       ),
                     ),
                     SizedBox(height: 28),
                     _AnimatedGradientButton(
                       icon: Icons.mark_email_unread,
-                      label: 'View Chat Requests',
+                      label: AppLocalizations.of(context)?.viewChatRequests ?? 'View Chat Requests',
                       gradientColors: requestGradient,
                       onPressed: () => Navigator.push(
                         context,
@@ -139,21 +172,21 @@ class _AuthorHomeScreenState extends State<AuthorHomeScreen> with SingleTickerPr
                     SizedBox(height: 24),
                     _AnimatedGradientButton(
                       icon: Icons.forum,
-                      label: 'View Conversations',
+                      label: AppLocalizations.of(context)?.viewConversations ?? 'View Conversations',
                       gradientColors: convoGradient,
                       onPressed: () => Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (_) => AuthorConversationsScreen()),
+                        MaterialPageRoute(builder: (context) => AuthorConversationsScreen()),
                       ),
                     ),
                     SizedBox(height: 24),
                     _AnimatedGradientButton(
                       icon: Icons.report,
-                      label: 'Report Requests',
+                      label: AppLocalizations.of(context)?.reportRequests ?? 'Report Requests',
                       gradientColors: reportGradient,
                       onPressed: () => Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (_) => AuthorReviewScreen()),
+                        MaterialPageRoute(builder: (context) => AuthorReviewScreen()),
                       ),
                     ),
                   ],
@@ -215,6 +248,7 @@ class __AnimatedGradientButtonState extends State<_AnimatedGradientButton> with 
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, child) {
@@ -250,12 +284,12 @@ class __AnimatedGradientButtonState extends State<_AnimatedGradientButton> with 
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(widget.icon, color: Colors.white, size: 30),
+                Icon(widget.icon, color: theme.colorScheme.onPrimary, size: 30),
                 SizedBox(width: 18),
                 Text(
                   widget.label,
                   style: TextStyle(
-                    color: Colors.white,
+                    color: theme.colorScheme.onPrimary,
                     fontSize: 21,
                     fontWeight: FontWeight.bold,
                     letterSpacing: 1.1,

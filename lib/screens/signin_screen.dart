@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../l10n/app_localizations.dart';
 
 import 'author_home_screen.dart';
 import 'main_app_screen.dart';
 import 'admin_home_page.dart';
 import 'signup_screen.dart';
+import 'package:provider/provider.dart';
+import '../theme_locale_provider.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -104,17 +107,33 @@ class _SignInScreenState extends State<SignInScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: theme.colorScheme.background,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: theme.colorScheme.background,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Color(0xFF1A237E)),
+          icon: Icon(Icons.arrow_back, color: theme.colorScheme.primary),
           onPressed: _goBackToHome,
           tooltip: 'Back to Home',
         ),
-        title: const Text('Sign In', style: TextStyle(color: Color(0xFF1A237E), fontWeight: FontWeight.bold)),
+        title: Text(AppLocalizations.of(context)?.signIn ?? 'Sign In', style: TextStyle(color: theme.colorScheme.primary, fontWeight: FontWeight.bold)),
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.language),
+            onPressed: () {
+              Provider.of<ThemeLocaleProvider>(context, listen: false).toggleLocale();
+            },
+            tooltip: AppLocalizations.of(context)?.toggleLanguage ?? 'Toggle Language',
+          ),
+          IconButton(
+            icon: Icon(Icons.brightness_6),
+            onPressed: () {
+              Provider.of<ThemeLocaleProvider>(context, listen: false).toggleTheme();
+            },
+            tooltip: AppLocalizations.of(context)?.toggleTheme ?? 'Toggle Theme',
+          ),
+        ],
       ),
       body: Center(
         child: SingleChildScrollView(
@@ -122,25 +141,26 @@ class _SignInScreenState extends State<SignInScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 24.0),
             child: Column(
               children: [
-                Icon(Icons.shield, size: 64, color: Color(0xFF1A237E)),
+                Icon(Icons.shield, size: 64, color: theme.colorScheme.primary),
                 SizedBox(height: 8),
                 Text(
-                  'Welcome Back!',
+                  AppLocalizations.of(context)?.welcomeBack ?? 'Welcome Back!',
                   style: TextStyle(
                     fontSize: 26,
                     fontWeight: FontWeight.bold,
-                    color: Color(0xFF1A237E),
+                    color: theme.colorScheme.primary,
                   ),
                 ),
                 SizedBox(height: 4),
                 Text(
-                  'Sign in to continue your mission.',
-                  style: TextStyle(fontSize: 16, color: Colors.grey[700]),
+                  AppLocalizations.of(context)?.signInToContinueMission ?? 'Sign in to continue your mission.',
+                  style: TextStyle(fontSize: 16, color: theme.textTheme.bodyLarge?.color),
                 ),
                 SizedBox(height: 24),
                 Card(
                   elevation: 6,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+                  color: theme.cardColor,
                   child: Padding(
                     padding: const EdgeInsets.symmetric(vertical: 28, horizontal: 20),
                     child: Form(
@@ -155,35 +175,33 @@ class _SignInScreenState extends State<SignInScreen> {
                           TextFormField(
                             controller: _emailController,
                             decoration: InputDecoration(
-                              labelText: 'Email',
-                              prefixIcon: Icon(Icons.email_outlined, color: Color(0xFF1A237E)),
+                              labelText: AppLocalizations.of(context)?.email ?? 'Email',
+                              prefixIcon: Icon(Icons.email_outlined, color: theme.colorScheme.primary),
                               border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                               filled: true,
-                              fillColor: Colors.grey[50],
+                              fillColor: theme.inputDecorationTheme.fillColor ?? theme.colorScheme.surface,
                             ),
                             keyboardType: TextInputType.emailAddress,
-                            validator: (value) =>
-                            value != null && value.contains('@') ? null : 'Enter a valid email',
+                            validator: (value) => value != null && value.contains('@') ? null : AppLocalizations.of(context)?.enterValidEmail ?? 'Enter a valid email',
                           ),
                           SizedBox(height: 16),
                           TextFormField(
                             controller: _passwordController,
                             decoration: InputDecoration(
-                              labelText: 'Password',
-                              prefixIcon: Icon(Icons.lock_outline, color: Color(0xFF1A237E)),
+                              labelText: AppLocalizations.of(context)?.password ?? 'Password',
+                              prefixIcon: Icon(Icons.lock_outline, color: theme.colorScheme.primary),
                               border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                               filled: true,
-                              fillColor: Colors.grey[50],
+                              fillColor: theme.inputDecorationTheme.fillColor ?? theme.colorScheme.surface,
                             ),
                             obscureText: true,
-                            validator: (value) =>
-                            value != null && value.length >= 6 ? null : 'Enter a valid password',
+                            validator: (value) => value != null && value.length >= 6 ? null : AppLocalizations.of(context)?.enterValidPassword ?? 'Enter a valid password',
                           ),
                           Align(
                             alignment: Alignment.centerRight,
                             child: TextButton(
                               onPressed: _isLoading ? null : _resetPassword,
-                              child: const Text('Forgot Password?'),
+                              child: Text(AppLocalizations.of(context)?.forgotPassword ?? 'Forgot Password?'),
                             ),
                           ),
                           SizedBox(height: 16),
@@ -201,11 +219,11 @@ class _SignInScreenState extends State<SignInScreen> {
                               )
                                   : Icon(Icons.login, color: Colors.white),
                               label: Text(
-                                _isLoading ? 'Signing In...' : 'Sign In',
+                                _isLoading ? (AppLocalizations.of(context)?.signingIn ?? 'Signing In...') : (AppLocalizations.of(context)?.signIn ?? 'Sign In'),
                                 style: TextStyle(fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold),
                               ),
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Color(0xFF1A237E),
+                                backgroundColor: theme.colorScheme.primary,
                                 padding: EdgeInsets.symmetric(vertical: 14),
                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                                 elevation: 2,
@@ -217,13 +235,13 @@ class _SignInScreenState extends State<SignInScreen> {
                           SizedBox(
                             width: double.infinity,
                             child: OutlinedButton.icon(
-                              icon: Icon(Icons.person_add, color: Color(0xFF1A237E)),
+                              icon: Icon(Icons.person_add, color: theme.colorScheme.primary),
                               label: Text(
-                                'Sign Up',
-                                style: TextStyle(fontSize: 18, color: Color(0xFF1A237E), fontWeight: FontWeight.bold),
+                                AppLocalizations.of(context)?.signUp ?? 'Sign Up',
+                                style: TextStyle(fontSize: 18, color: theme.colorScheme.primary, fontWeight: FontWeight.bold),
                               ),
                               style: OutlinedButton.styleFrom(
-                                side: BorderSide(color: Color(0xFF1A237E), width: 2),
+                                side: BorderSide(color: theme.colorScheme.primary, width: 2),
                                 padding: EdgeInsets.symmetric(vertical: 14),
                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                               ),

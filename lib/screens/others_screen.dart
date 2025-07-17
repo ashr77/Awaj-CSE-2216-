@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'report_status_screen.dart';
 import 'about_us.dart'; // Make sure this import path is correct
+import '../l10n/app_localizations.dart';
 
 class OthersScreen extends StatefulWidget {
   @override
@@ -77,7 +78,7 @@ class _OthersScreenState extends State<OthersScreen> with SingleTickerProviderSt
                     Icon(Icons.assignment_turned_in, size: 56, color: theme.colorScheme.primary),
                     SizedBox(height: 16),
                     Text(
-                      'Check Your Report Status',
+                      AppLocalizations.of(context)?.checkReportStatus ?? 'Check Your Report Status',
                       style: TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
@@ -86,20 +87,20 @@ class _OthersScreenState extends State<OthersScreen> with SingleTickerProviderSt
                     ),
                     SizedBox(height: 8),
                     Text(
-                      'Stay updated on your submitted reports.',
+                      AppLocalizations.of(context)?.stayUpdatedOnReports ?? 'Stay updated on your submitted reports.',
                       style: TextStyle(fontSize: 15, color: theme.textTheme.bodyLarge?.color),
                       textAlign: TextAlign.center,
                     ),
                     SizedBox(height: 28),
                     _AnimatedActionButton(
-                      label: 'Report Status',
+                      label: AppLocalizations.of(context)?.reportStatus ?? 'Report Status',
                       icon: Icons.assignment_turned_in,
                       color: theme.colorScheme.primary,
                       onPressed: _animateAndNavigateToReportStatus,
                     ),
                     SizedBox(height: 18),
                     _AnimatedActionButton(
-                      label: 'About Us',
+                      label: AppLocalizations.of(context)?.aboutUs ?? 'About Us',
                       icon: Icons.group,
                       color: Colors.blueAccent,
                       onPressed: _animateAndNavigateToAboutUs,

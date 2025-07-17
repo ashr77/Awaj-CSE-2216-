@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../theme_locale_provider.dart';
+import '../l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
 
 class AdminPostPage extends StatefulWidget {
   const AdminPostPage({super.key});
@@ -45,10 +48,26 @@ class _AdminPostPageState extends State<AdminPostPage> with SingleTickerProvider
     return Scaffold(
       backgroundColor: theme.colorScheme.background,
       appBar: AppBar(
-        title: Text('All Posts', style: TextStyle(color: theme.colorScheme.primary, fontWeight: FontWeight.bold)),
+        title: Text(AppLocalizations.of(context)?.allPosts ?? 'All Posts', style: TextStyle(color: theme.colorScheme.primary, fontWeight: FontWeight.bold)),
         backgroundColor: theme.colorScheme.background,
         elevation: 1,
         iconTheme: IconThemeData(color: theme.colorScheme.primary),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.language, color: theme.colorScheme.primary),
+            onPressed: () {
+              Provider.of<ThemeLocaleProvider>(context, listen: false).toggleLocale();
+            },
+            tooltip: AppLocalizations.of(context)?.toggleLanguage ?? 'Toggle Language',
+          ),
+          IconButton(
+            icon: Icon(Icons.brightness_6, color: theme.colorScheme.primary),
+            onPressed: () {
+              Provider.of<ThemeLocaleProvider>(context, listen: false).toggleTheme();
+            },
+            tooltip: AppLocalizations.of(context)?.toggleTheme ?? 'Toggle Theme',
+          ),
+        ],
       ),
       body: FadeTransition(
         opacity: _fadeAnimation,
@@ -72,7 +91,7 @@ class _AdminPostPageState extends State<AdminPostPage> with SingleTickerProvider
                     children: [
                       Icon(Icons.forum, size: 64, color: theme.colorScheme.primary),
                       SizedBox(height: 18),
-                      Text('No posts found.', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                      Text(AppLocalizations.of(context)?.noPostsFound ?? 'No posts found.', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                     ],
                   ),
                 );
@@ -118,19 +137,19 @@ class _AdminPostPageState extends State<AdminPostPage> with SingleTickerProvider
                                     final confirm = await showDialog<bool>(
                                       context: context,
                                       builder: (context) => AlertDialog(
-                                        title: const Text('Delete Post'),
-                                        content: const Text('Are you sure you want to delete this post?'),
+                                        title: Text(AppLocalizations.of(context)?.deletePost ?? 'Delete Post'),
+                                        content: Text(AppLocalizations.of(context)?.areYouSureDeletePost ?? 'Are you sure you want to delete this post?'),
                                         actions: [
                                           TextButton(
                                             onPressed: () => Navigator.pop(context, false),
-                                            child: const Text('Cancel'),
+                                            child: Text(AppLocalizations.of(context)?.cancel ?? 'Cancel'),
                                           ),
                                           ElevatedButton(
                                             style: ElevatedButton.styleFrom(
                                               backgroundColor: theme.colorScheme.error,
                                             ),
                                             onPressed: () => Navigator.pop(context, true),
-                                            child: const Text('Delete'),
+                                            child: Text(AppLocalizations.of(context)?.delete ?? 'Delete'),
                                           ),
                                         ],
                                       ),
@@ -138,7 +157,7 @@ class _AdminPostPageState extends State<AdminPostPage> with SingleTickerProvider
                                     if (confirm == true) {
                                       await _deletePost(postId);
                                       ScaffoldMessenger.of(context).showSnackBar(
-                                        const SnackBar(content: Text('Post deleted.')),
+                                        SnackBar(content: Text(AppLocalizations.of(context)?.postDeleted ?? 'Post deleted.')),
                                       );
                                     }
                                   },
@@ -269,7 +288,7 @@ class __AnimatedDeleteButtonState extends State<_AnimatedDeleteButton> with Sing
       },
       child: IconButton(
         icon: Icon(Icons.delete, color: Colors.red[700]),
-        tooltip: 'Delete Post',
+        tooltip: AppLocalizations.of(context)?.deletePost ?? 'Delete Post',
         onPressed: _animateAndDelete,
       ),
     );

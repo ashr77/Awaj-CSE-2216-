@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'chat_conversation_screen.dart';
 import 'author_conversations_screen.dart';
+import '../l10n/app_localizations.dart';
 
 class AuthorChatPage extends StatefulWidget {
   @override
@@ -50,13 +51,13 @@ class _AuthorChatPageState extends State<AuthorChatPage> with SingleTickerProvid
     return Scaffold(
       backgroundColor: theme.colorScheme.background,
       appBar: AppBar(
-        title: Text('Chat Requests', style: TextStyle(color: theme.colorScheme.primary, fontWeight: FontWeight.bold)),
+        title: Text(AppLocalizations.of(context)?.chatRequests ?? 'Chat Requests', style: TextStyle(color: theme.colorScheme.primary, fontWeight: FontWeight.bold)),
         backgroundColor: theme.colorScheme.background,
         elevation: 1,
         actions: [
           IconButton(
             icon: Icon(Icons.forum, color: theme.colorScheme.primary),
-            tooltip: 'View conversations',
+            tooltip: AppLocalizations.of(context)?.viewConversations ?? 'View conversations',
             onPressed: () => Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => AuthorConversationsScreen()),
@@ -91,7 +92,7 @@ class _AuthorChatPageState extends State<AuthorChatPage> with SingleTickerProvid
                     children: [
                       Icon(Icons.check_circle, size: 64, color: Colors.green),
                       SizedBox(height: 16),
-                      Text('No pending requests', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
+                      Text(AppLocalizations.of(context)?.noPendingRequests ?? 'No pending requests', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
                     ],
                   ),
                 );
@@ -122,7 +123,7 @@ class _AuthorChatPageState extends State<AuthorChatPage> with SingleTickerProvid
                         return _AnimatedRequestCard(
                           child: ListTile(
                             leading: CircleAvatar(child: Icon(Icons.error)),
-                            title: Text('User not found'),
+                            title: Text(AppLocalizations.of(context)?.userNotFound ?? 'User not found'),
                           ),
                         );
                       }
@@ -199,14 +200,14 @@ class _AuthorChatPageState extends State<AuthorChatPage> with SingleTickerProvid
                 _AnimatedActionIcon(
                   icon: Icons.check,
                   color: Colors.green,
-                  tooltip: 'Accept',
+                  tooltip: AppLocalizations.of(context)?.accept ?? 'Accept',
                   onTap: () => _acceptRequest(context, requestId, requestData, userData),
                 ),
                 SizedBox(height: 8),
                 _AnimatedActionIcon(
                   icon: Icons.close,
                   color: Colors.red,
-                  tooltip: 'Reject',
+                  tooltip: AppLocalizations.of(context)?.reject ?? 'Reject',
                   onTap: () => _rejectRequest(requestId),
                 ),
               ],

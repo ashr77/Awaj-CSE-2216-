@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'admin_post_page.dart';
 import 'admin_report_page.dart';
+import '../theme_locale_provider.dart';
+import '../l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
 
 class AdminHomePage extends StatefulWidget {
   const AdminHomePage({super.key});
@@ -37,20 +40,29 @@ class _AdminHomePageState extends State<AdminHomePage> with SingleTickerProvider
   }
 
   Future<void> _confirmSignOut() async {
+    final theme = Theme.of(context);
     final shouldLogout = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Confirm Logout'),
-        content: Text('Are you sure you want to logout?'),
+        backgroundColor: theme.dialogBackgroundColor,
+        title: Text(
+          AppLocalizations.of(context)?.confirmLogout ?? 'Confirm Logout',
+          style: TextStyle(color: theme.textTheme.bodyLarge?.color),
+        ),
+        content: Text(
+          AppLocalizations.of(context)?.areYouSureLogout ?? 'Are you sure you want to logout?',
+          style: TextStyle(color: theme.textTheme.bodyLarge?.color),
+        ),
         actions: [
           TextButton(
-            child: Text('Cancel'),
+            child: Text(AppLocalizations.of(context)?.cancel ?? 'Cancel', style: TextStyle(color: theme.colorScheme.primary)),
             onPressed: () => Navigator.of(context).pop(false),
           ),
           ElevatedButton(
-            child: Text('Yes, Logout'),
+            child: Text(AppLocalizations.of(context)?.yesLogout ?? 'Yes, Logout'),
             style: ElevatedButton.styleFrom(
-              backgroundColor: Theme.of(context).colorScheme.error,
+              backgroundColor: theme.colorScheme.error,
+              foregroundColor: theme.colorScheme.onError,
             ),
             onPressed: () => Navigator.of(context).pop(true),
           ),
@@ -70,14 +82,28 @@ class _AdminHomePageState extends State<AdminHomePage> with SingleTickerProvider
     return Scaffold(
       backgroundColor: theme.colorScheme.background,
       appBar: AppBar(
-        title: Text('Admin Dashboard', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        title: Text(AppLocalizations.of(context)?.adminDashboard ?? 'Admin Dashboard', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
         backgroundColor: Color(0xFF1A237E),
         automaticallyImplyLeading: false,
         elevation: 1,
         actions: [
           IconButton(
+            icon: Icon(Icons.language, color: Colors.white),
+            onPressed: () {
+              Provider.of<ThemeLocaleProvider>(context, listen: false).toggleLocale();
+            },
+            tooltip: AppLocalizations.of(context)?.toggleLanguage ?? 'Toggle Language',
+          ),
+          IconButton(
+            icon: Icon(Icons.brightness_6, color: Colors.white),
+            onPressed: () {
+              Provider.of<ThemeLocaleProvider>(context, listen: false).toggleTheme();
+            },
+            tooltip: AppLocalizations.of(context)?.toggleTheme ?? 'Toggle Theme',
+          ),
+          IconButton(
             icon: Icon(Icons.logout, color: Colors.white),
-            tooltip: 'Sign Out',
+            tooltip: AppLocalizations.of(context)?.signOut ?? 'Sign Out',
             onPressed: _confirmSignOut,
           ),
         ],
@@ -94,19 +120,19 @@ class _AdminHomePageState extends State<AdminHomePage> with SingleTickerProvider
                 children: [
                   _AnimatedAdminCard(
                     icon: Icons.post_add,
-                    label: 'Manage Posts',
+                    label: AppLocalizations.of(context)?.managePosts ?? 'Manage Posts',
                     color: Color(0xFF1A237E),
                     onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (_) => AdminPostPage()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => AdminPostPage()));
                     },
                   ),
                   SizedBox(height: 32),
                   _AnimatedAdminCard(
                     icon: Icons.report,
-                    label: 'Manage Reports',
+                    label: AppLocalizations.of(context)?.manageReports ?? 'Manage Reports',
                     color: Color(0xFFD32F2F),
                     onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (_) => AdminReportPage()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => AdminReportPage()));
                     },
                   ),
                 ],

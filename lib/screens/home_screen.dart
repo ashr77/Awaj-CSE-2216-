@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../l10n/app_localizations.dart';
+import '../theme_locale_provider.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -48,8 +51,29 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: theme.colorScheme.background,
+      appBar: AppBar(
+        backgroundColor: theme.colorScheme.background,
+        elevation: 0,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.language),
+            onPressed: () {
+              Provider.of<ThemeLocaleProvider>(context, listen: false).toggleLocale();
+            },
+            tooltip: AppLocalizations.of(context)?.toggleLanguage ?? 'Toggle Language',
+          ),
+          IconButton(
+            icon: Icon(Icons.brightness_6),
+            onPressed: () {
+              Provider.of<ThemeLocaleProvider>(context, listen: false).toggleTheme();
+            },
+            tooltip: AppLocalizations.of(context)?.toggleTheme ?? 'Toggle Theme',
+          ),
+        ],
+      ),
       body: Center(
         child: FadeTransition(
           opacity: _fadeAnimation,
@@ -77,9 +101,9 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                   ),
                   SizedBox(height: 18),
                   Text(
-                    'Awaj',
+                    AppLocalizations.of(context)?.appName ?? 'Awaj',
                     style: TextStyle(
-                      color: Color(0xFF1A237E),
+                      color: theme.colorScheme.primary,
                       fontWeight: FontWeight.bold,
                       fontSize: 32,
                       shadows: [
@@ -96,9 +120,9 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                     opacity: showTagline ? 1.0 : 0.0,
                     duration: Duration(milliseconds: 700),
                     child: Text(
-                      'Report & Track Corruption Anonymously',
+                      AppLocalizations.of(context)?.tagline ?? 'Report & Track Corruption Anonymously',
                       style: TextStyle(
-                        color: Color(0xFF333333),
+                        color: theme.textTheme.bodyLarge?.color,
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
                       ),
@@ -107,7 +131,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                   ),
                   SizedBox(height: 36),
                   Card(
-                    color: Colors.white,
+                    color: theme.cardColor,
                     elevation: 8,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(24),
@@ -119,23 +143,23 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                         children: [
                           _AnimatedHomeButton(
                             icon: Icons.login,
-                            label: 'Sign In',
+                            label: AppLocalizations.of(context)?.signIn ?? 'Sign In',
                             onTap: () => Navigator.pushNamed(context, '/signin'),
-                            color: Color(0xFF1A237E),
+                            color: theme.colorScheme.primary,
                           ),
                           SizedBox(height: 20),
                           _AnimatedHomeButton(
                             icon: Icons.person_add,
-                            label: 'Sign Up',
+                            label: AppLocalizations.of(context)?.signUp ?? 'Sign Up',
                             onTap: () => Navigator.pushNamed(context, '/signup'),
-                            color: Color(0xFF43A047),
+                            color: theme.colorScheme.secondary,
                           ),
                           SizedBox(height: 20),
                           _AnimatedHomeButton(
                             icon: Icons.exit_to_app,
-                            label: 'Exit',
+                            label: AppLocalizations.of(context)?.exit ?? 'Exit',
                             onTap: () => SystemNavigator.pop(),
-                            color: Color(0xFFD32F2F),
+                            color: theme.colorScheme.error,
                           ),
                         ],
                       ),
@@ -198,6 +222,7 @@ class __AnimatedHomeButtonState extends State<_AnimatedHomeButton> with SingleTi
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, child) {
@@ -209,12 +234,12 @@ class __AnimatedHomeButtonState extends State<_AnimatedHomeButton> with SingleTi
       child: SizedBox(
         width: double.infinity,
         child: ElevatedButton.icon(
-          icon: Icon(widget.icon, color: Colors.white),
+          icon: Icon(widget.icon, color: theme.colorScheme.onPrimary),
           label: Text(
             widget.label,
             style: TextStyle(
               fontSize: 18,
-              color: Colors.white,
+              color: theme.colorScheme.onPrimary,
               fontWeight: FontWeight.bold,
             ),
           ),

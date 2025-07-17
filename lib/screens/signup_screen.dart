@@ -4,6 +4,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+import '../l10n/app_localizations.dart';
+import '../theme_locale_provider.dart';
+import 'package:provider/provider.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -161,18 +164,38 @@ class _SignUpScreenState extends State<SignUpScreen> with SingleTickerProviderSt
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: theme.colorScheme.background,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: theme.colorScheme.background,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Color(0xFF1A237E)),
+          icon: Icon(Icons.arrow_back, color: theme.colorScheme.primary),
           onPressed: _goBack,
           tooltip: 'Back',
         ),
-        title: const Text('Create Account', style: TextStyle(color: Color(0xFF1A237E), fontWeight: FontWeight.bold)),
+        title: Text(
+          AppLocalizations.of(context)?.createAccount ?? 'Create Account',
+          style: TextStyle(color: theme.colorScheme.primary, fontWeight: FontWeight.bold),
+        ),
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.language),
+            onPressed: () {
+              Provider.of<ThemeLocaleProvider>(context, listen: false).toggleLocale();
+            },
+            tooltip: AppLocalizations.of(context)?.toggleLanguage ?? 'Toggle Language',
+          ),
+          IconButton(
+            icon: Icon(Icons.brightness_6),
+            onPressed: () {
+              Provider.of<ThemeLocaleProvider>(context, listen: false).toggleTheme();
+            },
+            tooltip: AppLocalizations.of(context)?.toggleTheme ?? 'Toggle Theme',
+          ),
+        ],
       ),
       body: Center(
         child: FadeTransition(
@@ -183,20 +206,20 @@ class _SignUpScreenState extends State<SignUpScreen> with SingleTickerProviderSt
               child: Column(
                 children: [
                   // App icon
-                  Icon(Icons.shield, size: 64, color: Color(0xFF1A237E)),
+                  Icon(Icons.shield, size: 64, color: theme.colorScheme.primary),
                   SizedBox(height: 8),
                   Text(
-                    'Join the Mission!',
+                    AppLocalizations.of(context)?.joinMission ?? 'Join the Mission!',
                     style: TextStyle(
                       fontSize: 26,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF1A237E),
+                      color: theme.colorScheme.primary,
                     ),
                   ),
                   SizedBox(height: 4),
                   Text(
-                    'Create your account to report & track corruption.',
-                    style: TextStyle(fontSize: 16, color: Colors.grey[700]),
+                    AppLocalizations.of(context)?.createAccountDescription ?? 'Create your account to report & track corruption.',
+                    style: TextStyle(fontSize: 16, color: theme.colorScheme.onBackground.withOpacity(0.7)),
                   ),
                   SizedBox(height: 24),
                   Card(
@@ -218,11 +241,11 @@ class _SignUpScreenState extends State<SignUpScreen> with SingleTickerProviderSt
                                     height: 100,
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
-                                      color: Colors.grey[200],
-                                      border: Border.all(color: Color(0xFF1A237E), width: 2),
+                                      color: theme.colorScheme.surfaceVariant,
+                                      border: Border.all(color: theme.colorScheme.primary, width: 2),
                                     ),
                                     child: _imageFile == null
-                                        ? Icon(Icons.person, size: 56, color: Colors.grey)
+                                        ? Icon(Icons.person, size: 56, color: theme.colorScheme.onSurfaceVariant)
                                         : ClipOval(
                                       child: Image.file(
                                         File(_imageFile!.path),
@@ -234,11 +257,11 @@ class _SignUpScreenState extends State<SignUpScreen> with SingleTickerProviderSt
                                   ),
                                   Container(
                                     decoration: BoxDecoration(
-                                      color: Color(0xFF1A237E),
+                                      color: theme.colorScheme.primary,
                                       shape: BoxShape.circle,
                                     ),
                                     child: IconButton(
-                                      icon: Icon(Icons.camera_alt, color: Colors.white),
+                                      icon: Icon(Icons.camera_alt, color: theme.colorScheme.onPrimary),
                                       onPressed: _isLoading ? null : _pickImage,
                                     ),
                                   ),
@@ -246,44 +269,44 @@ class _SignUpScreenState extends State<SignUpScreen> with SingleTickerProviderSt
                               ),
                             ),
                             SizedBox(height: 10),
-                            Text('Add Profile Photo', style: TextStyle(color: Color(0xFF1A237E), fontWeight: FontWeight.w500)),
+                            Text(AppLocalizations.of(context)?.addProfilePhoto ?? 'Add Profile Photo', style: TextStyle(color: theme.colorScheme.primary, fontWeight: FontWeight.w500)),
                             SizedBox(height: 20),
 
                             // Form fields
                             TextFormField(
                               controller: _fullNameController,
                               decoration: InputDecoration(
-                                labelText: 'Full Name',
-                                prefixIcon: Icon(Icons.person),
+                                labelText: AppLocalizations.of(context)?.fullName ?? 'Full Name',
+                                prefixIcon: Icon(Icons.person, color: theme.colorScheme.onSurfaceVariant),
                                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                                 filled: true,
-                                fillColor: Colors.grey[50],
+                                fillColor: theme.colorScheme.surfaceVariant,
                               ),
-                              validator: (value) => value!.isEmpty ? 'Required' : null,
+                              validator: (value) => value!.isEmpty ? (AppLocalizations.of(context)?.required ?? 'Required') : null,
                             ),
                             SizedBox(height: 14),
                             TextFormField(
                               controller: _emailController,
                               decoration: InputDecoration(
-                                labelText: 'Email',
-                                prefixIcon: Icon(Icons.email),
+                                labelText: AppLocalizations.of(context)?.email ?? 'Email',
+                                prefixIcon: Icon(Icons.email, color: theme.colorScheme.onSurfaceVariant),
                                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                                 filled: true,
-                                fillColor: Colors.grey[50],
+                                fillColor: theme.colorScheme.surfaceVariant,
                               ),
                               keyboardType: TextInputType.emailAddress,
-                              validator: (value) => value!.contains('@') ? null : 'Invalid email',
+                              validator: (value) => value!.contains('@') ? null : (AppLocalizations.of(context)?.invalidEmail ?? 'Invalid email'),
                             ),
                             SizedBox(height: 14),
                             TextFormField(
                               controller: _nidController,
                               decoration: InputDecoration(
-                                labelText: 'NID / Birth Registration',
-                                prefixIcon: Icon(Icons.badge),
+                                labelText: AppLocalizations.of(context)?.nidBirthRegistration ?? 'NID / Birth Registration',
+                                prefixIcon: Icon(Icons.badge, color: theme.colorScheme.onSurfaceVariant),
                                 errorText: _nidError,
                                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                                 filled: true,
-                                fillColor: Colors.grey[50],
+                                fillColor: theme.colorScheme.surfaceVariant,
                               ),
                               validator: _validateNid,
                             ),
@@ -291,11 +314,11 @@ class _SignUpScreenState extends State<SignUpScreen> with SingleTickerProviderSt
                             TextFormField(
                               controller: _phoneController,
                               decoration: InputDecoration(
-                                labelText: 'Phone',
-                                prefixIcon: Icon(Icons.phone),
+                                labelText: AppLocalizations.of(context)?.phone ?? 'Phone',
+                                prefixIcon: Icon(Icons.phone, color: theme.colorScheme.onSurfaceVariant),
                                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                                 filled: true,
-                                fillColor: Colors.grey[50],
+                                fillColor: theme.colorScheme.surfaceVariant,
                               ),
                               keyboardType: TextInputType.phone,
                               validator: _validatePhone,
@@ -304,27 +327,27 @@ class _SignUpScreenState extends State<SignUpScreen> with SingleTickerProviderSt
                             TextFormField(
                               controller: _passwordController,
                               decoration: InputDecoration(
-                                labelText: 'Password',
-                                prefixIcon: Icon(Icons.lock),
+                                labelText: AppLocalizations.of(context)?.password ?? 'Password',
+                                prefixIcon: Icon(Icons.lock, color: theme.colorScheme.onSurfaceVariant),
                                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                                 filled: true,
-                                fillColor: Colors.grey[50],
+                                fillColor: theme.colorScheme.surfaceVariant,
                               ),
                               obscureText: true,
-                              validator: (value) => value!.length < 6 ? 'Min 6 characters' : null,
+                              validator: (value) => value!.length < 6 ? (AppLocalizations.of(context)?.min6Characters ?? 'Min 6 characters') : null,
                             ),
                             SizedBox(height: 14),
                             TextFormField(
                               controller: _confirmPasswordController,
                               decoration: InputDecoration(
-                                labelText: 'Confirm Password',
-                                prefixIcon: Icon(Icons.lock_outline),
+                                labelText: AppLocalizations.of(context)?.confirmPassword ?? 'Confirm Password',
+                                prefixIcon: Icon(Icons.lock_outline, color: theme.colorScheme.onSurfaceVariant),
                                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                                 filled: true,
-                                fillColor: Colors.grey[50],
+                                fillColor: theme.colorScheme.surfaceVariant,
                               ),
                               obscureText: true,
-                              validator: (value) => value != _passwordController.text ? 'Passwords don\'t match' : null,
+                              validator: (value) => value != _passwordController.text ? (AppLocalizations.of(context)?.passwordsDontMatch ?? "Passwords don't match") : null,
                             ),
                             SizedBox(height: 26),
 
@@ -337,17 +360,17 @@ class _SignUpScreenState extends State<SignUpScreen> with SingleTickerProviderSt
                                   width: 20,
                                   height: 20,
                                   child: CircularProgressIndicator(
-                                    color: Colors.white,
+                                    color: theme.colorScheme.onPrimary,
                                     strokeWidth: 2,
                                   ),
                                 )
-                                    : Icon(Icons.person_add, color: Colors.white),
+                                    : Icon(Icons.person_add, color: theme.colorScheme.onPrimary),
                                 label: Text(
-                                  _isLoading ? 'Signing Up...' : 'Sign Up',
-                                  style: TextStyle(fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold),
+                                  _isLoading ? (AppLocalizations.of(context)?.signingUp ?? 'Signing Up...') : (AppLocalizations.of(context)?.signUp ?? 'Sign Up'),
+                                  style: TextStyle(fontSize: 18, color: theme.colorScheme.onPrimary, fontWeight: FontWeight.bold),
                                 ),
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: Color(0xFF1A237E),
+                                  backgroundColor: theme.colorScheme.primary,
                                   padding: EdgeInsets.symmetric(vertical: 14),
                                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                                   elevation: 2,

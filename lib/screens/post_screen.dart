@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'dart:io';
+import '../l10n/app_localizations.dart';
 
 class PostScreen extends StatefulWidget {
   @override
@@ -78,11 +79,11 @@ class _PostScreenState extends State<PostScreen> {
         _isAnonymous = false;
       });
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Post created successfully!')),
+        SnackBar(content: Text(AppLocalizations.of(context)?.postCreatedSuccessfully ?? 'Post created successfully!')),
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error creating post: $e')),
+        SnackBar(content: Text(AppLocalizations.of(context)?.errorCreatingPost('$e') ?? 'Error creating post: $e')),
       );
     } finally {
       setState(() => _isLoading = false);
@@ -102,7 +103,7 @@ class _PostScreenState extends State<PostScreen> {
           builder: (context, setDialogState) {
             return AlertDialog(
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-              title: Text('Create Post', style: TextStyle(fontWeight: FontWeight.bold)),
+              title: Text(AppLocalizations.of(context)?.createPost ?? 'Create Post', style: TextStyle(fontWeight: FontWeight.bold)),
               content: SingleChildScrollView(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -111,7 +112,7 @@ class _PostScreenState extends State<PostScreen> {
                       controller: _postController,
                       maxLines: 4,
                       decoration: InputDecoration(
-                        hintText: 'What do you want to share?',
+                        hintText: AppLocalizations.of(context)?.whatDoYouWantToShare ?? 'What do you want to share?',
                         border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                         filled: true,
                         fillColor: Theme.of(context).colorScheme.surface.withOpacity(0.06),
@@ -125,11 +126,11 @@ class _PostScreenState extends State<PostScreen> {
                       ),
                     TextButton.icon(
                       icon: Icon(Icons.image),
-                      label: Text('Add Image'),
+                      label: Text(AppLocalizations.of(context)?.addImage ?? 'Add Image'),
                       onPressed: _pickImage,
                     ),
                     CheckboxListTile(
-                      title: Text('Post Anonymously'),
+                      title: Text(AppLocalizations.of(context)?.postAnonymously ?? 'Post Anonymously'),
                       value: _isAnonymous,
                       onChanged: (value) {
                         setDialogState(() {
@@ -146,7 +147,7 @@ class _PostScreenState extends State<PostScreen> {
               actions: [
                 TextButton(
                   onPressed: () => Navigator.pop(context),
-                  child: Text('Cancel'),
+                  child: Text(AppLocalizations.of(context)?.cancel ?? 'Cancel'),
                 ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
@@ -162,7 +163,7 @@ class _PostScreenState extends State<PostScreen> {
                     height: 18,
                     child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
                   )
-                      : Text('Post', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                      : Text(AppLocalizations.of(context)?.post ?? 'Post', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
                 ),
               ],
             );
@@ -182,7 +183,7 @@ class _PostScreenState extends State<PostScreen> {
           builder: (context, setDialogState) {
             return AlertDialog(
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-              title: Text('Edit Post'),
+              title: Text(AppLocalizations.of(context)?.editPost ?? 'Edit Post'),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -190,12 +191,12 @@ class _PostScreenState extends State<PostScreen> {
                     controller: editController,
                     maxLines: 4,
                     decoration: InputDecoration(
-                      hintText: 'Edit your post',
+                      hintText: AppLocalizations.of(context)?.editYourPost ?? 'Edit your post',
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                     ),
                   ),
                   CheckboxListTile(
-                    title: Text('Post Anonymously'),
+                    title: Text(AppLocalizations.of(context)?.postAnonymously ?? 'Post Anonymously'),
                     value: isAnonymous,
                     onChanged: (value) {
                       setDialogState(() {
@@ -208,7 +209,7 @@ class _PostScreenState extends State<PostScreen> {
               actions: [
                 TextButton(
                   onPressed: () => Navigator.pop(context),
-                  child: Text('Cancel'),
+                  child: Text(AppLocalizations.of(context)?.cancel ?? 'Cancel'),
                 ),
                 ElevatedButton(
                   onPressed: () async {
@@ -218,7 +219,7 @@ class _PostScreenState extends State<PostScreen> {
                     });
                     Navigator.pop(context);
                   },
-                  child: Text('Save'),
+                  child: Text(AppLocalizations.of(context)?.save ?? 'Save'),
                 ),
               ],
             );
@@ -231,7 +232,7 @@ class _PostScreenState extends State<PostScreen> {
   Future<void> _deletePost(String postId) async {
     await _firestore.collection('posts').doc(postId).delete();
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Post deleted')),
+      SnackBar(content: Text(AppLocalizations.of(context)?.postDeleted ?? 'Post deleted')),
     );
   }
 
@@ -242,7 +243,7 @@ class _PostScreenState extends State<PostScreen> {
     return Scaffold(
       backgroundColor: theme.colorScheme.background,
       appBar: AppBar(
-        title: Text('Community Posts', style: TextStyle(fontWeight: FontWeight.bold, color: theme.colorScheme.primary)),
+        title: Text(AppLocalizations.of(context)?.communityPosts ?? 'Community Posts', style: TextStyle(fontWeight: FontWeight.bold, color: theme.colorScheme.primary)),
         backgroundColor: theme.colorScheme.background,
         elevation: 1,
         actions: [
@@ -261,7 +262,7 @@ class _PostScreenState extends State<PostScreen> {
         onPressed: () => _showCreatePostDialog(context),
         icon: Icon(Icons.add, color: Colors.white),
         label: Text(
-          'New Post',
+          AppLocalizations.of(context)?.newPost ?? 'New Post',
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
@@ -465,7 +466,7 @@ class _PostItemState extends State<PostItem> {
                 onTap: () {
                   Navigator.pop(context);
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Reported. Thank you!')),
+                    SnackBar(content: Text(AppLocalizations.of(context)?.reportedThankYou ?? 'Reported. Thank you!')),
                   );
                 },
               ),
@@ -585,7 +586,7 @@ class _PostItemState extends State<PostItem> {
           child: TextField(
             controller: _commentController,
             decoration: InputDecoration(
-              hintText: 'Add a comment...',
+              hintText: AppLocalizations.of(context)?.addAComment ?? 'Add a comment...',
               border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
             ),
           ),
@@ -614,7 +615,7 @@ class _PostItemState extends State<PostItem> {
         final comments = snapshot.data!.docs;
 
         if (comments.isEmpty) {
-          return Text('No comments yet');
+          return Text(AppLocalizations.of(context)?.noCommentsYet ?? 'No comments yet');
         }
 
         return Column(

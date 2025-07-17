@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'chat_conversation_screen.dart';
+import '../l10n/app_localizations.dart';
 
 class AuthorConversationsScreen extends StatefulWidget {
   @override
@@ -41,15 +42,15 @@ class _AuthorConversationsScreenState extends State<AuthorConversationsScreen> w
 
     if (currentUser == null) {
       return Scaffold(
-        appBar: AppBar(title: Text('Your Conversations')),
-        body: Center(child: Text('Please sign in to view conversations')),
+        appBar: AppBar(title: Text(AppLocalizations.of(context)?.yourConversations ?? 'Your Conversations')),
+        body: Center(child: Text(AppLocalizations.of(context)?.pleaseSignInToViewConversations ?? 'Please sign in to view conversations')),
       );
     }
 
     return Scaffold(
       backgroundColor: theme.colorScheme.background,
       appBar: AppBar(
-        title: Text('Your Conversations', style: TextStyle(color: theme.colorScheme.primary, fontWeight: FontWeight.bold)),
+        title: Text(AppLocalizations.of(context)?.yourConversations ?? 'Your Conversations', style: TextStyle(color: theme.colorScheme.primary, fontWeight: FontWeight.bold)),
         backgroundColor: theme.colorScheme.background,
         elevation: 1,
       ),
@@ -87,8 +88,8 @@ class _AuthorConversationsScreenState extends State<AuthorConversationsScreen> w
                         children: [
                           Icon(Icons.chat, size: 64, color: theme.colorScheme.primary),
                           SizedBox(height: 16),
-                          Text('No conversations yet', style: TextStyle(fontWeight: FontWeight.bold)),
-                          Text('Accept chat requests to start conversations', style: TextStyle(color: Colors.grey)),
+                          Text(AppLocalizations.of(context)?.noConversationsYet ?? 'No conversations yet', style: TextStyle(fontWeight: FontWeight.bold)),
+                          Text(AppLocalizations.of(context)?.acceptChatRequestsToStart ?? 'Accept chat requests to start conversations', style: TextStyle(color: Colors.grey)),
                         ],
                       ),
                     );
@@ -111,7 +112,7 @@ class _AuthorConversationsScreenState extends State<AuthorConversationsScreen> w
                             return _AnimatedConversationCard(
                               child: ListTile(
                                 leading: CircleAvatar(child: CircularProgressIndicator()),
-                                title: Text('Loading...'),
+                                title: Text(AppLocalizations.of(context)?.loading ?? 'Loading...'),
                               ),
                             );
                           }
@@ -119,7 +120,7 @@ class _AuthorConversationsScreenState extends State<AuthorConversationsScreen> w
                             return _AnimatedConversationCard(
                               child: ListTile(
                                 leading: CircleAvatar(child: Icon(Icons.error)),
-                                title: Text('User not found'),
+                                title: Text(AppLocalizations.of(context)?.userNotFound ?? 'User not found'),
                               ),
                             );
                           }

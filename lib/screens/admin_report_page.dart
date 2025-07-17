@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../theme_locale_provider.dart';
+import '../l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
 
 class AdminReportPage extends StatefulWidget {
   const AdminReportPage({super.key});
@@ -64,10 +67,26 @@ class _AdminReportPageState extends State<AdminReportPage> with SingleTickerProv
     return Scaffold(
       backgroundColor: theme.colorScheme.background,
       appBar: AppBar(
-        title: const Text('All Reports', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: Text(AppLocalizations.of(context)?.allReports ?? 'All Reports', style: TextStyle(fontWeight: FontWeight.bold)),
         backgroundColor: Color(0xFF1A237E),
         elevation: 2,
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.language, color: Colors.white),
+            onPressed: () {
+              Provider.of<ThemeLocaleProvider>(context, listen: false).toggleLocale();
+            },
+            tooltip: AppLocalizations.of(context)?.toggleLanguage ?? 'Toggle Language',
+          ),
+          IconButton(
+            icon: Icon(Icons.brightness_6, color: Colors.white),
+            onPressed: () {
+              Provider.of<ThemeLocaleProvider>(context, listen: false).toggleTheme();
+            },
+            tooltip: AppLocalizations.of(context)?.toggleTheme ?? 'Toggle Theme',
+          ),
+        ],
       ),
       body: Container(
         decoration: BoxDecoration(
@@ -93,10 +112,10 @@ class _AdminReportPageState extends State<AdminReportPage> with SingleTickerProv
                 final reports = snapshot.data!.docs;
 
                 if (reports.isEmpty) {
-                  return const Center(
+                  return Center(
                     child: Text(
-                      'No reports found.',
-                      style: TextStyle(fontSize: 18, color: Colors.black54),
+                      AppLocalizations.of(context)?.noReportsFound ?? 'No reports found.',
+                      style: TextStyle(fontSize: 18, color: theme.textTheme.bodyLarge?.color),
                     ),
                   );
                 }
@@ -115,7 +134,7 @@ class _AdminReportPageState extends State<AdminReportPage> with SingleTickerProv
                     return AnimatedReportCard(
                       key: ValueKey(reportId),
                       child: Material(
-                        color: Colors.white,
+                        color: theme.cardColor,
                         borderRadius: BorderRadius.circular(18),
                         elevation: 5,
                         child: Padding(
@@ -130,14 +149,14 @@ class _AdminReportPageState extends State<AdminReportPage> with SingleTickerProv
                                   Expanded(
                                     child: Text(
                                       data['reportName'] ?? '',
-                                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
+                                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17, color: theme.textTheme.bodyLarge?.color),
                                     ),
                                   ),
                                   Chip(
                                     label: Text(
                                       status[0].toUpperCase() + status.substring(1),
-                                      style: const TextStyle(
-                                        color: Colors.white,
+                                      style: TextStyle(
+                                        color: theme.colorScheme.onPrimary,
                                         fontWeight: FontWeight.bold,
                                         fontSize: 13,
                                       ),
@@ -148,15 +167,15 @@ class _AdminReportPageState extends State<AdminReportPage> with SingleTickerProv
                                 ],
                               ),
                               const SizedBox(height: 10),
-                              _InfoRow(label: 'By', value: data['userEmail'] ?? 'Unknown'),
-                              _InfoRow(label: 'City', value: data['city'] ?? '-'),
-                              _InfoRow(label: 'Office', value: data['office'] ?? '-'),
+                              _InfoRow(label: AppLocalizations.of(context)?.by ?? 'By', value: data['userEmail'] ?? 'Unknown'),
+                              _InfoRow(label: AppLocalizations.of(context)?.city ?? 'City', value: data['city'] ?? '-'),
+                              _InfoRow(label: AppLocalizations.of(context)?.office ?? 'Office', value: data['office'] ?? '-'),
                               if (data['brief'] != null && data['brief'].toString().trim().isNotEmpty)
                                 Padding(
                                   padding: const EdgeInsets.only(top: 10),
                                   child: Text(
                                     data['brief'],
-                                    style: const TextStyle(fontSize: 15, color: Colors.black87),
+                                    style: TextStyle(fontSize: 15, color: theme.textTheme.bodyLarge?.color),
                                   ),
                                 ),
                               if (imageUrl != null && imageUrl.toString().isNotEmpty)
@@ -170,7 +189,7 @@ class _AdminReportPageState extends State<AdminReportPage> with SingleTickerProv
                                       width: double.infinity,
                                       fit: BoxFit.cover,
                                       errorBuilder: (context, error, stackTrace) =>
-                                      const Text('Could not load image'),
+                                        Text('Could not load image', style: TextStyle(color: theme.textTheme.bodyLarge?.color)),
                                     ),
                                   ),
                                 ),
@@ -182,12 +201,12 @@ class _AdminReportPageState extends State<AdminReportPage> with SingleTickerProv
                                       showDialog(
                                         context: context,
                                         builder: (_) => AlertDialog(
-                                          title: const Text('Video Evidence'),
+                                          title: Text(AppLocalizations.of(context)?.videoEvidence ?? 'Video Evidence'),
                                           content: AspectRatio(
                                             aspectRatio: 16 / 9,
                                             child: Center(
                                               child: Text(
-                                                'Video preview not supported here.\nOpen this link in browser:\n\n$videoUrl',
+                                                '${AppLocalizations.of(context)?.videoPreviewNotSupportedHere}\n${AppLocalizations.of(context)?.openThisLinkInBrowser}\n\n$videoUrl',
                                                 style: const TextStyle(fontSize: 15),
                                               ),
                                             ),
@@ -195,7 +214,7 @@ class _AdminReportPageState extends State<AdminReportPage> with SingleTickerProv
                                           actions: [
                                             TextButton(
                                               onPressed: () => Navigator.pop(context),
-                                              child: const Text('Close'),
+                                              child: Text(AppLocalizations.of(context)?.close ?? 'Close'),
                                             ),
                                           ],
                                         ),
@@ -212,8 +231,8 @@ class _AdminReportPageState extends State<AdminReportPage> with SingleTickerProv
                                         children: [
                                           const Icon(Icons.videocam, color: Colors.deepPurple),
                                           const SizedBox(width: 8),
-                                          const Text(
-                                            'View Video',
+                                          Text(
+                                            AppLocalizations.of(context)?.viewVideo ?? 'View Video',
                                             style: TextStyle(
                                                 color: Colors.deepPurple, fontWeight: FontWeight.w600),
                                           ),
@@ -230,7 +249,7 @@ class _AdminReportPageState extends State<AdminReportPage> with SingleTickerProv
                                       Expanded(
                                         child: _AnimatedActionButton(
                                           icon: Icons.check,
-                                          label: 'Approve',
+                                          label: AppLocalizations.of(context)?.approve ?? 'Approve',
                                           color: Color(0xFF43A047),
                                           onPressed: () => _updateReportStatus(reportId, 'approved'),
                                         ),
@@ -239,7 +258,7 @@ class _AdminReportPageState extends State<AdminReportPage> with SingleTickerProv
                                       Expanded(
                                         child: _AnimatedActionButton(
                                           icon: Icons.clear,
-                                          label: 'Decline',
+                                          label: AppLocalizations.of(context)?.decline ?? 'Decline',
                                           color: Color(0xFFD32F2F),
                                           onPressed: () => _updateReportStatus(reportId, 'declined'),
                                         ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../l10n/app_localizations.dart';
 
 class AboutMeScreen extends StatefulWidget {
   @override
@@ -36,7 +37,7 @@ class _AboutMeScreenState extends State<AboutMeScreen> with SingleTickerProvider
   @override
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser;
-    if (user == null) return _buildPlaceholder('Please sign in', context);
+    if (user == null) return _buildPlaceholder(AppLocalizations.of(context)?.signInPrompt ?? 'Please sign in', context);
 
     final theme = Theme.of(context);
 
@@ -53,7 +54,7 @@ class _AboutMeScreenState extends State<AboutMeScreen> with SingleTickerProvider
           }
 
           final userData = snapshot.data!.data() as Map<String, dynamic>?;
-          if (userData == null) return _buildPlaceholder('User data not found', context);
+          if (userData == null) return _buildPlaceholder(AppLocalizations.of(context)?.userDataNotFound ?? 'User data not found', context);
 
           return FadeTransition(
             opacity: _fadeAnimation,
@@ -67,7 +68,7 @@ class _AboutMeScreenState extends State<AboutMeScreen> with SingleTickerProvider
                   flexibleSpace: FlexibleSpaceBar(
                     centerTitle: true,
                     title: Text(
-                      userData['fullName'] ?? 'About Me',
+                      userData['fullName'] ?? AppLocalizations.of(context)?.aboutMeTitle ?? 'About Me',
                       style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
@@ -105,24 +106,24 @@ class _AboutMeScreenState extends State<AboutMeScreen> with SingleTickerProvider
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          _buildSectionHeader('Profile Information', theme),
+                          _buildSectionHeader(AppLocalizations.of(context)?.profileInfoTitle ?? 'Profile Information', theme),
                           _buildInfoCard(
                             theme: theme,
                             children: [
-                              _buildInfoRow('Full Name', userData['fullName'], theme),
-                              _buildInfoRow('Email', userData['email'], theme),
-                              _buildInfoRow('NID', userData['nid'], theme),
-                              _buildInfoRow('Phone', userData['phone'], theme),
+                              _buildInfoRow(AppLocalizations.of(context)?.fullNameLabel ?? 'Full Name', userData['fullName'], theme),
+                              _buildInfoRow(AppLocalizations.of(context)?.emailLabel ?? 'Email', userData['email'], theme),
+                              _buildInfoRow(AppLocalizations.of(context)?.nidLabel ?? 'NID', userData['nid'], theme),
+                              _buildInfoRow(AppLocalizations.of(context)?.phoneLabel ?? 'Phone', userData['phone'], theme),
                               _buildUserTypeBadge(userData['userType'], theme),
                             ],
                           ),
                           SizedBox(height: 24),
-                          _buildSectionHeader('Account Details', theme),
+                          _buildSectionHeader(AppLocalizations.of(context)?.accountDetailsTitle ?? 'Account Details', theme),
                           _buildInfoCard(
                             theme: theme,
                             children: [
-                              _buildInfoRow('Account Created', _formatTimestamp(userData['createdAt']), theme),
-                              _buildInfoRow('User ID', user.uid, theme),
+                              _buildInfoRow(AppLocalizations.of(context)?.accountCreatedLabel ?? 'Account Created', _formatTimestamp(userData['createdAt']), theme),
+                              _buildInfoRow(AppLocalizations.of(context)?.userIdLabel ?? 'User ID', user.uid, theme),
                             ],
                           ),
                         ],
@@ -152,7 +153,7 @@ class _AboutMeScreenState extends State<AboutMeScreen> with SingleTickerProvider
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Text(
-        title,
+        AppLocalizations.of(context)?.sectionTitle(title) ?? title,
         style: TextStyle(
           fontSize: 20,
           fontWeight: FontWeight.bold,
@@ -208,7 +209,7 @@ class _AboutMeScreenState extends State<AboutMeScreen> with SingleTickerProvider
           Expanded(
             flex: 3,
             child: Text(
-              value ?? 'Not provided',
+              value ?? AppLocalizations.of(context)?.notProvided ?? 'Not provided',
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w500,
@@ -232,7 +233,7 @@ class _AboutMeScreenState extends State<AboutMeScreen> with SingleTickerProvider
       child: Row(
         children: [
           Text(
-            'User Type: ',
+            AppLocalizations.of(context)?.userTypeLabel ?? 'User Type: ',
             style: TextStyle(
               fontWeight: FontWeight.w600,
               color: theme.hintColor,
@@ -250,7 +251,7 @@ class _AboutMeScreenState extends State<AboutMeScreen> with SingleTickerProvider
               ),
             ),
             child: Text(
-              userType?.toUpperCase() ?? 'USER',
+              userType?.toUpperCase() ?? AppLocalizations.of(context)?.userTypeBadge ?? 'USER',
               style: TextStyle(
                 color: textColor,
                 fontWeight: FontWeight.bold,

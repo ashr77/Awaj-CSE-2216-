@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'author_conversations_screen.dart';
 import 'chat_conversation_screen.dart';
+import '../l10n/app_localizations.dart';
 
 class AuthorReviewScreen extends StatefulWidget {
   @override
@@ -68,13 +69,13 @@ class _AuthorReviewScreenState extends State<AuthorReviewScreen> with SingleTick
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Report marked as completed'),
+          content: Text(AppLocalizations.of(context)?.reportMarkedCompleted ?? 'Report marked as completed'),
           backgroundColor: Colors.indigo,
         ),
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: ${e.toString()}'), backgroundColor: Colors.red),
+        SnackBar(content: Text(AppLocalizations.of(context)?.errorWithMessage(e.toString()) ?? 'Error: ${e.toString()}'), backgroundColor: Colors.red),
       );
     } finally {
       setState(() => _isLoading = false);
@@ -87,9 +88,9 @@ class _AuthorReviewScreenState extends State<AuthorReviewScreen> with SingleTick
 
     if (_currentUser == null) {
       return Scaffold(
-        appBar: AppBar(title: Text('Author Review')),
+        appBar: AppBar(title: Text(AppLocalizations.of(context)?.authorReview ?? 'Author Review')),
         body: Center(
-          child: Text('Please sign in to access this feature',
+          child: Text(AppLocalizations.of(context)?.pleaseSignInToAccess ?? 'Please sign in to access this feature',
               style: TextStyle(fontSize: 16)),
         ),
       );
@@ -98,7 +99,7 @@ class _AuthorReviewScreenState extends State<AuthorReviewScreen> with SingleTick
     return Scaffold(
       backgroundColor: theme.colorScheme.background,
       appBar: AppBar(
-        title: Text('Report Review', style: TextStyle(color: theme.colorScheme.primary, fontWeight: FontWeight.bold)),
+        title: Text(AppLocalizations.of(context)?.reportReview ?? 'Report Review', style: TextStyle(color: theme.colorScheme.primary, fontWeight: FontWeight.bold)),
         backgroundColor: theme.colorScheme.background,
         centerTitle: true,
         elevation: 1,
@@ -135,7 +136,7 @@ class _AuthorReviewScreenState extends State<AuthorReviewScreen> with SingleTick
                       Icon(Icons.error, color: Colors.red, size: 48),
                       SizedBox(height: 16),
                       Text(
-                        'Error loading reports',
+                        AppLocalizations.of(context)?.errorLoadingReports ?? 'Error loading reports',
                         style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                       ),
                       SizedBox(height: 8),
@@ -157,11 +158,11 @@ class _AuthorReviewScreenState extends State<AuthorReviewScreen> with SingleTick
                       Icon(Icons.check_circle, size: 72, color: Colors.green),
                       SizedBox(height: 20),
                       Text(
-                        'No reports to review',
+                        AppLocalizations.of(context)?.noReportsToReview ?? 'No reports to review',
                         style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                       ),
                       SizedBox(height: 10),
-                      Text('All approved reports have been handled'),
+                      Text(AppLocalizations.of(context)?.allApprovedReportsHandled ?? 'All approved reports have been handled'),
                     ],
                   ),
                 );
@@ -274,7 +275,7 @@ class _AuthorReviewScreenState extends State<AuthorReviewScreen> with SingleTick
                   Expanded(
                     child: _AnimatedActionButton(
                       icon: Icons.chat,
-                      label: 'Chat with User',
+                      label: AppLocalizations.of(context)?.chatWithUser ?? 'Chat with User',
                       color: Colors.blue,
                       onPressed: () {
                         Navigator.push(
@@ -294,7 +295,7 @@ class _AuthorReviewScreenState extends State<AuthorReviewScreen> with SingleTick
                   Expanded(
                     child: _AnimatedActionButton(
                       icon: Icons.check_circle,
-                      label: 'Complete',
+                      label: AppLocalizations.of(context)?.complete ?? 'Complete',
                       color: Colors.indigo,
                       onPressed: () => _showCompleteDialog(reportId, userId),
                     ),
@@ -306,7 +307,7 @@ class _AuthorReviewScreenState extends State<AuthorReviewScreen> with SingleTick
               Padding(
                 padding: EdgeInsets.only(top: 12),
                 child: Text(
-                  "Completion Feedback: ${data['completionFeedback']['feedback']}",
+                  (AppLocalizations.of(context)?.completionFeedback ?? 'Completion Feedback: ') + (data['completionFeedback']['feedback'] ?? ''),
                   style: TextStyle(color: Colors.indigo, fontWeight: FontWeight.bold),
                 ),
               ),
@@ -347,20 +348,20 @@ class _AuthorReviewScreenState extends State<AuthorReviewScreen> with SingleTick
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Complete Report', style: TextStyle(color: Colors.indigo)),
+          title: Text(AppLocalizations.of(context)?.completeReport ?? 'Complete Report', style: TextStyle(color: Colors.indigo)),
           content: TextField(
             controller: _completeController,
             decoration: InputDecoration(
               border: OutlineInputBorder(),
-              labelText: 'Completion Feedback',
-              hintText: 'Describe the completion/final feedback...',
+              labelText: AppLocalizations.of(context)?.completionFeedbackLabel ?? 'Completion Feedback',
+              hintText: AppLocalizations.of(context)?.describeCompletionFeedback ?? 'Describe the completion/final feedback...',
             ),
             maxLines: 4,
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: Text('Cancel'),
+              child: Text(AppLocalizations.of(context)?.cancel ?? 'Cancel'),
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(backgroundColor: Colors.indigo),
@@ -370,7 +371,7 @@ class _AuthorReviewScreenState extends State<AuthorReviewScreen> with SingleTick
                   _completeReport(reportId, userId, _completeController.text.trim());
                 }
               },
-              child: Text('Complete'),
+              child: Text(AppLocalizations.of(context)?.complete ?? 'Complete'),
             ),
           ],
         );

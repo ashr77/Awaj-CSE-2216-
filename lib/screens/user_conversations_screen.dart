@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'chat_conversation_screen.dart';
 import 'chat_screen.dart';
+import '../l10n/app_localizations.dart';
 
 class UserConversationsScreen extends StatefulWidget {
   @override
@@ -17,22 +18,22 @@ class _UserConversationsScreenState extends State<UserConversationsScreen> {
   Widget build(BuildContext context) {
     if (_currentUser == null) {
       return Scaffold(
-        appBar: AppBar(title: Text('Your Chats')),
-        body: Center(child: Text('Please sign in to view conversations')),
+        appBar: AppBar(title: Text(AppLocalizations.of(context)?.yourChats ?? 'Your Chats')),
+        body: Center(child: Text(AppLocalizations.of(context)?.pleaseSignInToViewConversations ?? 'Please sign in to view conversations')),
       );
     }
 
     final uid = _currentUser!.uid;
 
     return Scaffold(
-      appBar: AppBar(title: Text('Your Conversations')),
+      appBar: AppBar(title: Text(AppLocalizations.of(context)?.yourConversations ?? 'Your Conversations')),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.person_add),
         onPressed: () => Navigator.push(
           context,
-          MaterialPageRoute(builder: (_) => ChatScreen()),
+          MaterialPageRoute(builder: (context) => ChatScreen()),
         ),
-        tooltip: 'Chat with new authority',
+        tooltip: AppLocalizations.of(context)?.chatWithNewAuthority ?? 'Chat with new authority',
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: _firestore

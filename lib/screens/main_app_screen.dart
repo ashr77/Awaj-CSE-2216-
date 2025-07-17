@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
+import '../theme_locale_provider.dart';
+import '../l10n/app_localizations.dart';
 
 import 'report_screen.dart';
 import 'chat_screen.dart';
@@ -42,20 +45,29 @@ class _MainAppScreenState extends State<MainAppScreen> with SingleTickerProvider
   }
 
   Future<void> _confirmSignOut() async {
+    final theme = Theme.of(context);
     final shouldLogout = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Confirm Logout'),
-        content: Text('Are you sure you want to logout?'),
+        backgroundColor: theme.dialogBackgroundColor,
+        title: Text(
+          AppLocalizations.of(context)?.confirmLogout ?? 'Confirm Logout',
+          style: TextStyle(color: theme.textTheme.bodyLarge?.color),
+        ),
+        content: Text(
+          AppLocalizations.of(context)?.areYouSureLogout ?? 'Are you sure you want to logout?',
+          style: TextStyle(color: theme.textTheme.bodyLarge?.color),
+        ),
         actions: [
           TextButton(
-            child: Text('Cancel'),
+            child: Text(AppLocalizations.of(context)?.cancel ?? 'Cancel', style: TextStyle(color: theme.colorScheme.primary)),
             onPressed: () => Navigator.of(context).pop(false),
           ),
           ElevatedButton(
-            child: Text('Yes, Logout'),
+            child: Text(AppLocalizations.of(context)?.yesLogout ?? 'Yes, Logout'),
             style: ElevatedButton.styleFrom(
-              backgroundColor: Theme.of(context).colorScheme.error,
+              backgroundColor: theme.colorScheme.error,
+              foregroundColor: theme.colorScheme.onError,
             ),
             onPressed: () => Navigator.of(context).pop(true),
           ),
@@ -74,12 +86,26 @@ class _MainAppScreenState extends State<MainAppScreen> with SingleTickerProvider
     return Scaffold(
       backgroundColor: theme.colorScheme.background,
       appBar: AppBar(
-        title: Text('Main Menu', style: TextStyle(color: theme.colorScheme.primary, fontWeight: FontWeight.bold)),
+        title: Text(AppLocalizations.of(context)?.appTitle ?? 'Auth System'),
         backgroundColor: theme.colorScheme.background,
         elevation: 1,
         centerTitle: true,
         automaticallyImplyLeading: false, // This removes the back button.
         actions: [
+          IconButton(
+            icon: Icon(Icons.language),
+            onPressed: () {
+              Provider.of<ThemeLocaleProvider>(context, listen: false).toggleLocale();
+            },
+            tooltip: AppLocalizations.of(context)?.toggleLanguage ?? 'Toggle Language',
+          ),
+          IconButton(
+            icon: Icon(Icons.brightness_6),
+            onPressed: () {
+              Provider.of<ThemeLocaleProvider>(context, listen: false).toggleTheme();
+            },
+            tooltip: AppLocalizations.of(context)?.toggleTheme ?? 'Toggle Theme',
+          ),
           IconButton(
             icon: Icon(Icons.logout, color: theme.colorScheme.primary),
             tooltip: 'Sign Out',
@@ -99,7 +125,7 @@ class _MainAppScreenState extends State<MainAppScreen> with SingleTickerProvider
                   Icon(Icons.shield, size: 72, color: theme.colorScheme.primary),
                   SizedBox(height: 12),
                   Text(
-                    'Welcome!',
+                    AppLocalizations.of(context)?.welcome ?? 'Welcome!',
                     style: TextStyle(
                       fontSize: 26,
                       fontWeight: FontWeight.bold,
@@ -108,7 +134,7 @@ class _MainAppScreenState extends State<MainAppScreen> with SingleTickerProvider
                   ),
                   SizedBox(height: 6),
                   Text(
-                    'Choose an action below.',
+                    AppLocalizations.of(context)?.chooseAction ?? 'Choose an action below.',
                     style: TextStyle(fontSize: 16, color: theme.textTheme.bodyLarge?.color),
                   ),
                   SizedBox(height: 28),
@@ -123,37 +149,37 @@ class _MainAppScreenState extends State<MainAppScreen> with SingleTickerProvider
                         children: [
                           _AnimatedMenuButton(
                             icon: Icons.report_problem,
-                            label: 'Report Problem',
+                            label: AppLocalizations.of(context)?.reportProblem ?? 'Report Problem',
                             color: Color(0xFFD32F2F),
-                            onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => SubmitReportScreen())),
+                            onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => SubmitReportScreen())),
                           ),
                           SizedBox(height: 18),
                           _AnimatedMenuButton(
                             icon: Icons.chat_bubble_outline,
-                            label: 'Chat',
+                            label: AppLocalizations.of(context)?.chat ?? 'Chat',
                             color: theme.colorScheme.primary,
-                            onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => UserConversationsScreen())),
+                            onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => UserConversationsScreen())),
                           ),
                           SizedBox(height: 18),
                           _AnimatedMenuButton(
                             icon: Icons.post_add,
-                            label: 'Post',
+                            label: AppLocalizations.of(context)?.post ?? 'Post',
                             color: Color(0xFF43A047),
-                            onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => PostScreen())),
+                            onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => PostScreen())),
                           ),
                           SizedBox(height: 18),
                           _AnimatedMenuButton(
                             icon: Icons.person_outline,
-                            label: 'About Me',
+                            label: AppLocalizations.of(context)?.aboutMe ?? 'About Me',
                             color: Color(0xFF283593),
-                            onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => AboutMeScreen())),
+                            onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => AboutMeScreen())),
                           ),
                           SizedBox(height: 18),
                           _AnimatedMenuButton(
                             icon: Icons.more_horiz,
-                            label: 'Others',
+                            label: AppLocalizations.of(context)?.others ?? 'Others',
                             color: Color(0xFF512DA8),
-                            onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => OthersScreen())),
+                            onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => OthersScreen())),
                           ),
                         ],
                       ),

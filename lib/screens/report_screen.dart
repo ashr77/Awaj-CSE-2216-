@@ -4,6 +4,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import '../l10n/app_localizations.dart';
 
 class SubmitReportScreen extends StatefulWidget {
   @override
@@ -118,7 +119,7 @@ class _SubmitReportScreenState extends State<SubmitReportScreen> with SingleTick
     return Scaffold(
       backgroundColor: theme.colorScheme.background,
       appBar: AppBar(
-        title: Text('Submit Report', style: TextStyle(color: theme.colorScheme.primary, fontWeight: FontWeight.bold)),
+        title: Text(AppLocalizations.of(context)?.submitReport ?? 'Submit Report', style: TextStyle(color: theme.colorScheme.primary, fontWeight: FontWeight.bold)),
         backgroundColor: theme.colorScheme.background,
         elevation: 1,
         iconTheme: IconThemeData(color: theme.colorScheme.primary),
@@ -142,26 +143,26 @@ class _SubmitReportScreenState extends State<SubmitReportScreen> with SingleTick
                         Icon(Icons.shield, size: 52, color: theme.colorScheme.primary),
                         SizedBox(height: 10),
                         Text(
-                          'Report Corruption',
+                          AppLocalizations.of(context)?.reportCorruption ?? 'Report Corruption',
                           style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: theme.colorScheme.primary),
                         ),
                         SizedBox(height: 18),
                         TextFormField(
                           controller: _reportNameController,
                           decoration: InputDecoration(
-                            labelText: 'Report Name',
+                            labelText: AppLocalizations.of(context)?.reportName ?? 'Report Name',
                             prefixIcon: Icon(Icons.title, color: theme.colorScheme.primary),
                             border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                             filled: true,
                             fillColor: theme.colorScheme.surface.withOpacity(0.04),
                           ),
-                          validator: (value) => value!.isEmpty ? 'Required' : null,
+                          validator: (value) => value!.isEmpty ? (AppLocalizations.of(context)?.required ?? 'Required') : null,
                         ),
                         SizedBox(height: 16),
                         DropdownButtonFormField<String>(
                           value: _selectedCity,
                           decoration: InputDecoration(
-                            labelText: 'City',
+                            labelText: AppLocalizations.of(context)?.city ?? 'City',
                             prefixIcon: Icon(Icons.location_city, color: theme.colorScheme.primary),
                             border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                             filled: true,
@@ -170,7 +171,7 @@ class _SubmitReportScreenState extends State<SubmitReportScreen> with SingleTick
                           items: _cities.map((city) {
                             return DropdownMenuItem(
                               value: city,
-                              child: Text(city),
+                              child: Text(AppLocalizations.of(context)?.cityName(city) ?? city),
                             );
                           }).toList(),
                           onChanged: (value) {
@@ -179,14 +180,14 @@ class _SubmitReportScreenState extends State<SubmitReportScreen> with SingleTick
                               _selectedOffice = null;
                             });
                           },
-                          validator: (value) => value == null ? 'Select a city' : null,
+                          validator: (value) => value == null ? (AppLocalizations.of(context)?.selectCity ?? 'Select a city') : null,
                         ),
                         SizedBox(height: 16),
                         if (_selectedCity != null)
                           DropdownButtonFormField<String>(
                             value: _selectedOffice,
                             decoration: InputDecoration(
-                              labelText: 'Office',
+                              labelText: AppLocalizations.of(context)?.office ?? 'Office',
                               prefixIcon: Icon(Icons.account_balance, color: theme.colorScheme.primary),
                               border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                               filled: true,
@@ -195,24 +196,24 @@ class _SubmitReportScreenState extends State<SubmitReportScreen> with SingleTick
                             items: _offices[_selectedCity]!.map((office) {
                               return DropdownMenuItem(
                                 value: office,
-                                child: Text(office),
+                                child: Text(AppLocalizations.of(context)?.officeName(office) ?? office),
                               );
                             }).toList(),
                             onChanged: (value) => setState(() => _selectedOffice = value),
-                            validator: (value) => value == null ? 'Select an office' : null,
+                            validator: (value) => value == null ? (AppLocalizations.of(context)?.selectOffice ?? 'Select an office') : null,
                           ),
                         SizedBox(height: 16),
                         TextFormField(
                           controller: _briefController,
                           decoration: InputDecoration(
-                            labelText: 'Brief Description',
+                            labelText: AppLocalizations.of(context)?.briefDescription ?? 'Brief Description',
                             prefixIcon: Icon(Icons.description, color: theme.colorScheme.primary),
                             border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                             filled: true,
                             fillColor: theme.colorScheme.surface.withOpacity(0.04),
                           ),
                           maxLines: 4,
-                          validator: (value) => value!.isEmpty ? 'Required' : null,
+                          validator: (value) => value!.isEmpty ? (AppLocalizations.of(context)?.required ?? 'Required') : null,
                         ),
                         SizedBox(height: 16),
                         Row(
@@ -221,7 +222,7 @@ class _SubmitReportScreenState extends State<SubmitReportScreen> with SingleTick
                               child: _imageFile == null
                                   ? OutlinedButton.icon(
                                 icon: Icon(Icons.photo, color: theme.colorScheme.primary),
-                                label: Text('Add Photo'),
+                                label: Text(AppLocalizations.of(context)?.addPhoto ?? 'Add Photo'),
                                 onPressed: _pickImage,
                               )
                                   : Column(
@@ -235,7 +236,7 @@ class _SubmitReportScreenState extends State<SubmitReportScreen> with SingleTick
                                     children: [
                                       TextButton(
                                         onPressed: _pickImage,
-                                        child: Text('Change Photo'),
+                                        child: Text(AppLocalizations.of(context)?.changePhoto ?? 'Change Photo'),
                                       ),
                                       IconButton(
                                         icon: Icon(Icons.close, color: Colors.red),
@@ -251,19 +252,19 @@ class _SubmitReportScreenState extends State<SubmitReportScreen> with SingleTick
                               child: _videoFile == null
                                   ? OutlinedButton.icon(
                                 icon: Icon(Icons.videocam, color: theme.colorScheme.primary),
-                                label: Text('Add Video'),
+                                label: Text(AppLocalizations.of(context)?.addVideo ?? 'Add Video'),
                                 onPressed: _pickVideo,
                               )
                                   : Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Icon(Icons.videocam, size: 36, color: Colors.blueGrey),
-                                  Text('Video Attached', style: TextStyle(color: Colors.blueGrey)),
+                                  Text(AppLocalizations.of(context)?.videoAttached ?? 'Video Attached', style: TextStyle(color: Colors.blueGrey)),
                                   Row(
                                     children: [
                                       TextButton(
                                         onPressed: _pickVideo,
-                                        child: Text('Change Video'),
+                                        child: Text(AppLocalizations.of(context)?.changeVideo ?? 'Change Video'),
                                       ),
                                       IconButton(
                                         icon: Icon(Icons.close, color: Colors.red),
@@ -289,7 +290,7 @@ class _SubmitReportScreenState extends State<SubmitReportScreen> with SingleTick
                             )
                                 : Icon(Icons.send, color: Colors.white),
                             label: Text(
-                              _isLoading ? 'Submitting...' : 'Submit Report',
+                              _isLoading ? (AppLocalizations.of(context)?.submitting ?? 'Submitting...') : (AppLocalizations.of(context)?.submitReport ?? 'Submit Report'),
                               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
                             ),
                             style: ElevatedButton.styleFrom(
