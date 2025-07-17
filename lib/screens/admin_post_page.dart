@@ -1,3 +1,4 @@
+//admin delete option added
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../theme_locale_provider.dart';
@@ -10,7 +11,7 @@ class AdminPostPage extends StatefulWidget {
   @override
   State<AdminPostPage> createState() => _AdminPostPageState();
 }
-
+//here we define the state for the AdminPostPage
 class _AdminPostPageState extends State<AdminPostPage> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _fadeAnimation;
@@ -196,7 +197,7 @@ class _AdminPostPageState extends State<AdminPostPage> with SingleTickerProvider
     );
   }
 }
-
+//here we define the AnimatedPostCard widget
 class AnimatedPostCard extends StatefulWidget {
   final Widget child;
   const AnimatedPostCard({required Key key, required this.child}) : super(key: key);

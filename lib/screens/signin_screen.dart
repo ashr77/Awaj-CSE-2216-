@@ -7,8 +7,10 @@ import 'author_home_screen.dart';
 import 'main_app_screen.dart';
 import 'admin_home_page.dart';
 import 'signup_screen.dart';
+
 import 'package:provider/provider.dart';
 import '../theme_locale_provider.dart';
+
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
